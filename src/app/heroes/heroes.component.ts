@@ -3,6 +3,7 @@ import { Hero } from '../Hero';
 import {HEROES} from './mocks/Hero.mocks'
 import { HeroService } from '../hero.service';
 import { MessageService } from '../message.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-heroes',
@@ -16,6 +17,7 @@ export class HeroesComponent implements OnInit {
   
   constructor(
     private heroService: HeroService,
+    private location: Location,
     private messageService: MessageService    
   ) {}
 
@@ -35,4 +37,24 @@ export class HeroesComponent implements OnInit {
     this.heroService.getHeroesMock().subscribe(
       heroes => this.heroes = heroes
   )}
+
+
+  goBack(): void {
+    this.location.back()
+  }
+
+  add(name: string): void {
+    name = name.trim();
+    if (!name) { return; }
+    this.heroService.addHero({ name } as Hero)
+      .subscribe(hero => {
+        this.heroes.push(hero);
+      });
+  }
+
+
+  delete(hero: Hero): void {
+    this.heroes = this.heroes.filter(h => h !== hero);
+    this.heroService.deleteHero(hero.id).subscribe();
+  }
 }
